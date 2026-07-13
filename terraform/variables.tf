@@ -12,7 +12,7 @@ variable "s3_directory_key" {
 }
 
 variable "environment" {
-  description = "Environment (dev, staging, production)"
+  description = "Environment (dev, prod)"
   type        = string
-  default     = "dev"
+  default     = "prod"
 }
