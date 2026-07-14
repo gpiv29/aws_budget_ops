@@ -1,4 +1,4 @@
 X - create identity provider token.actions.githubusercontent.com
 X - create role GitHubAction-AssumeRoleWithAction and edit trust policy
-- create github workflow which fetches and runs terraform CLI
+X - create github workflow which fetches and runs terraform CLI
 - configure KMS for s3
