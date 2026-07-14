@@ -1,7 +1,7 @@
 
 variable "s3_bucket_id" {
   type        = string
-  default     = "gpiv29-aws-sample-bucket"
+  default     = "gpiv29-aws-sample-bucket2"
   description = "The ID or name of the target S3 bucket."
 }
 
