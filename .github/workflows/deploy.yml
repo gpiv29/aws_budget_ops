@@ -26,7 +26,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Terraform AWS Setup
-        uses: ./.github/actions/terraform-aws-setup.yml
+        uses: ./.github/actions/terraform-aws-setup
 
       - name: Terraform Plan
         run: terraform plan
@@ -43,7 +43,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Terraform AWS Setup
-        uses: ./.github/actions/terraform-aws-setup.yml
+        uses: ./.github/actions/terraform-aws-setup
 
       - name: Deploy to AWS
         run: |
