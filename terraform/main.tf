@@ -81,10 +81,3 @@ resource "aws_s3_bucket_cors_configuration" "my_bucket_cors" {
     max_age_seconds = 3600
   }
 }
-
-# Create directory
-resource "aws_s3_object" "my_bucket_folder" {
-  bucket       = var.s3_bucket_id
-  key          = var.s3_directory_key
-  content_type = "application/x-directory"
-}
