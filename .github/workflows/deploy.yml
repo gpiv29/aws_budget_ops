@@ -2,20 +2,18 @@ name: deploy workflow
 
 on:
   workflow_dispatch:
-  push:
-    branches: ["main"]
-
-  pull_request:
-    branches: ["main"]
+#  push:
+#    branches: ["main"]
+#
+#  pull_request:
+#    branches: ["main"]
 
 permissions:
   id-token: write
-  contents: read
+  contents: write
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   plan:
-    # The type of runner that the job will run on
     name: Terraform plan
     runs-on: ubuntu-latest
     defaults:
@@ -30,6 +28,30 @@ jobs:
         with:
           role-to-assume: ${{ secrets.ROLE_TO_ASSUME }}
           aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Validate
+        run: |
+          terraform fmt -recursive
+          terraform validate
+        continue-on-error: false
+
+      - name: Add Cross-Platform Hashes
+        run: terraform providers lock -platform=windows_amd64 -platform=darwin_amd64 -platform=linux_amd64
+
+      - name: Commit and Push Lock File
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@://github.com"
+          if [ -n "$(git status --porcelain .terraform.lock.hcl)" ]; then
+            git add .terraform.lock.hcl
+            git commit -m "chore: automated terraform lock file update"
+            git push
+          else
+            echo "Lock file is already up to date."
+          fi
 
       - name: Terraform Plan
         run: terraform plan -out=tfplan
@@ -58,10 +80,13 @@ jobs:
           role_to_assume: ${{ secrets.ROLE_TO_ASSUME }}
           aws_region: ${{ secrets.AWS_REGION }}
 
+      - name: Terraform Init
+        run: terraform init -lockfile=readonly
+
       - name: Download Terraform Plan Artifact
         uses: actions/download-artifact@v4
         with:
           name: tfplan
 
       - name: Deploy to AWS
-        run: terraform apply -auto-approve
+        run: terraform apply -auto-approve tfplan

@@ -32,14 +32,3 @@ runs:
         audience: sts.amazonaws.com
         aws-region: ${{inputs.aws-region}}
         role-to-assume: ${{inputs.role-to-assume}} #change to reflect IAM role’s ARN
-
-    - name: Terraform Init
-      shell: bash
-      run: terraform init
-
-    - name: Terraform Validate
-      shell: bash
-      run: |
-        terraform fmt -recursive
-        terraform validate
-      continue-on-error: false
