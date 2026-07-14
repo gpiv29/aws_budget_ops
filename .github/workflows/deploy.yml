@@ -32,7 +32,14 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Terraform Plan
-        run: terraform plan
+        run: terraform plan -out=tfplan
+
+      - name: Upload Terraform Plan Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: tfplan
+          path: tfplan
+          retention-days: 1
 
   deploy:
     name: Terraform apply
@@ -51,7 +58,10 @@ jobs:
           role_to_assume: ${{ secrets.ROLE_TO_ASSUME }}
           aws_region: ${{ secrets.AWS_REGION }}
 
+      - name: Download Terraform Plan Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: tfplan
+
       - name: Deploy to AWS
-        run: |
-          terraform init
-          terraform apply -auto-approve
+        run: terraform apply -auto-approve
