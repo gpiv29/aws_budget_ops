@@ -28,8 +28,8 @@ jobs:
       - name: Terraform AWS Setup
         uses: ./.github/actions/terraform-aws-setup
         with:
-          role_to_assume: ${{ secrets.ROLE_TO_ASSUME }}
-          aws_region: ${{ secrets.AWS_REGION }}
+          role-to-assume: ${{ secrets.ROLE_TO_ASSUME }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Terraform Plan
         run: terraform plan
