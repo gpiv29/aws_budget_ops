@@ -1,0 +1,35 @@
+steps:
+  - name: Checkout repository
+    uses: actions/checkout@v4
+
+  - name: Set up Terraform Plugin Cache
+    uses: actions/cache@v4
+    with:
+      path: ~/.terraform.d/plugin-cache
+      key: ${{ runner.os }}-terraform-${{ hashFiles('**/.terraform.lock.hcl') }}
+      restore-keys: |
+        ${{ runner.os }}-terraform-
+
+  - name: Configure Terraform Environment
+    run: |
+      mkdir -p ~/.terraform.d/plugin-cache
+      echo "TF_PLUGIN_CACHE_DIR=$HOME/.terraform.d/plugin-cache" >> $GITHUB_ENV
+
+  - name: Hashicorp - Terraform setup
+    uses: hashicorp/setup-terraform@v4.0.1
+
+  - name: Configure AWS Credentials for github actions
+    uses: aws-actions/configure-aws-credentials@v4.0.2
+    with:
+      audience: sts.amazonaws.com
+      aws-region: ${{secrets.AWS_REGION}}
+      role-to-assume: ${{secrets.ROLE_TO_ASSUME}} #change to reflect IAM role’s ARN
+
+  - name: Terraform Init
+    run: terraform init
+
+  - name: Terraform Validate
+    run: |
+      terraform fmt -recursive
+      terraform validate
+    continue-on-error: false
