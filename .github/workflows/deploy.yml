@@ -56,14 +56,6 @@ jobs:
       - name: Terraform Plan
         run: terraform plan -out=tfplan
 
-      - name: Upload Terraform Plan Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: tfplan
-          path: ${{ github.workspace }}
-          if-no-files-found: error
-          retention-days: 1
-
   deploy:
     name: Terraform apply
     needs: plan
@@ -84,10 +76,5 @@ jobs:
       - name: Terraform Init
         run: terraform init -lockfile=readonly
 
-      - name: Download Terraform Plan Artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: tfplan
-
       - name: Deploy to AWS
-        run: terraform apply -auto-approve tfplan
+        run: terraform apply -auto-approve
