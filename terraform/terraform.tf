@@ -1,8 +1,8 @@
 terraform {
   backend "s3" {
-    bucket         = var.s3_terraform_state_bucket_id
-    key            = var.tfplan #object key
-    region         = var.environment
+    bucket         = "gpiv29-sample-terraform"
+    key            = "tfplan" #object key
+    region         = "us-east-2"
     use_lockfile   = true
   }
 
